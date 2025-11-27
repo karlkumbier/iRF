@@ -12,6 +12,7 @@
    GNU General Public License for more details.
 *******************************************************************/
 #include <R.h>
+#include <R_ext/RS.h>
 #include "rf.h"
 
 
@@ -65,8 +66,8 @@ void makeA(double *x, const int mdim, const int nsample, int *cat, int *a,
     int i, j, n1, n2, *index;
     double *v;
 
-    v     = (double *) Calloc(nsample, double);
-    index = (int *) Calloc(nsample, int);
+    v     = (double *) R_Calloc(nsample, double);
+    index = (int *) R_Calloc(nsample, int);
 
     for (i = 0; i < mdim; ++i) {
         if (cat[i] == 1) { /* numerical predictor */
@@ -95,8 +96,8 @@ void makeA(double *x, const int mdim, const int nsample, int *cat, int *a,
                 a[i + j*mdim] = (int) x[i + j * mdim];
         }
     }
-    Free(index);
-    Free(v);
+    R_Free(index);
+    R_Free(v);
 }
 
 
@@ -191,7 +192,7 @@ void permuteOOB(int m, double *x, int *in, int nsample, int mdim) {
     double *tp, tmp;
     int i, last, k, nOOB = 0;
 
-    tp = (double *) Calloc(nsample, double);
+    tp = (double *) R_Calloc(nsample, double);
 
     for (i = 0; i < nsample; ++i) {
 		/* make a copy of the OOB part of the data into tp (for permuting) */
@@ -218,7 +219,7 @@ void permuteOOB(int m, double *x, int *in, int nsample, int mdim) {
             nOOB++;
 		}
     }
-    Free(tp);
+    R_Free(tp);
 }
 
 /* Compute proximity. */

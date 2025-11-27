@@ -14,6 +14,7 @@
 
 #include <R.h>
 #include <Rmath.h>
+#include <R_ext/RS.h>
 #include "rf.h"
 
 #ifdef C_CLASSTREE
@@ -306,7 +307,7 @@ void F77_NAME(catmax)(double *parentDen, double *tclasscat,
     int j, k, n, icat[MAX_CAT], nsplit;
     double leftNum, leftDen, rightNum, decGini, *leftCatClassCount;
 
-    leftCatClassCount = (double *) Calloc(*nclass, double);
+    leftCatClassCount = (double *) R_Calloc(*nclass, double);
     *nhit = 0;
     nsplit = *lcat > *ncmax ?
         *ncsplit : (int) pow(2.0, (double) *lcat - 1) - 1;
@@ -349,7 +350,7 @@ void F77_NAME(catmax)(double *parentDen, double *tclasscat,
             *catsp = *lcat > *ncmax ? pack(*lcat, icat) : n + 1;
         }
     }
-    Free(leftCatClassCount);
+    R_Free(leftCatClassCount);
 }
 
 
@@ -426,7 +427,7 @@ void predictClassTree(double *x, int n, int mdim, int *treemap,
 
     /* decode the categorical splits */
     if (maxcat > 1) {
-        cbestsplit = (int *) Calloc(maxcat * treeSize, int);
+        cbestsplit = (int *) R_Calloc(maxcat * treeSize, int);
         zeroInt(cbestsplit, maxcat * treeSize);
         for (i = 0; i < treeSize; ++i) {
             if (nodestatus[i] != NODE_TERMINAL) {
@@ -460,5 +461,5 @@ void predictClassTree(double *x, int n, int mdim, int *treemap,
 		jts[i] = nodeclass[k];
 		nodex[i] = k + 1;
     }
-    if (maxcat > 1) Free(cbestsplit);
+    if (maxcat > 1) R_Free(cbestsplit);
 }

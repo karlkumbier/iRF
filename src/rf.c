@@ -25,6 +25,7 @@
 
 #include <R.h>
 #include <R_ext/Utils.h>
+#include <R_ext/RS.h>
 #include "rf.h"
 
 void oob(int nsample, int nclass, int *jin, int *cl, int *jtr,int *jerr,

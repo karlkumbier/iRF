@@ -26,13 +26,47 @@ You can subsequently load the package with the usual R commands:
 library(iRF)
 ```
 
-OSX users may need to intall gfortran to compile. This can be done with the
-following commands:
+### Prerequisites for macOS Users
 
-```r
-curl -OL http://r.research.att.com/libs/gfortran-4.8.2-darwin13.tar.bz2
-sudo tar fvxz gfortran-4.8.2-darwin13.tar.bz2 -C /
+#### Fortran Compiler
+
+This package requires a Fortran compiler to build. On macOS, you have two options:
+
+**Option 1: Official CRAN Installer (Recommended)**
+Download and install the universal GNU Fortran binary from [R for macOS Tools](https://mac.r-project.org/tools/):
+- Download `gfortran-14.2-universal.pkg` (or the latest version)
+- Run the installer package
+- The compiler will be installed to `/opt/gfortran/bin/gfortran`
+
+**Option 2: Homebrew**
+If you prefer using Homebrew:
+```bash
+# Install GCC (includes gfortran)
+brew install gcc
+
+# Create symlink where R expects to find gfortran
+sudo mkdir -p /opt/gfortran/bin
+sudo ln -sf /usr/local/bin/gfortran-15 /opt/gfortran/bin/gfortran
 ```
+
+#### Compiler Configuration for Apple Clang 17+
+
+If you're using macOS with Xcode Command Line Tools and Apple Clang 17 or later, you may need to configure your R Makevars file to ensure compatibility. Create or edit `~/.R/Makevars`:
+
+```bash
+mkdir -p ~/.R
+cat > ~/.R/Makevars << 'EOF'
+PKG_CFLAGS = -Wno-error=implicit-function-declaration
+CFLAGS = -Wno-error=implicit-function-declaration
+FC = /opt/gfortran/bin/gfortran
+FLIBS = -L/usr/local/lib/gcc/15 -lgfortran -lquadmath
+EOF
+```
+
+**Note**: The source code has been patched to work with modern compilers (Apple Clang 17+) by:
+- Adding `#include <R_ext/RS.h>` to all C source files
+- Replacing `Calloc`/`Free` with `R_Calloc`/`R_Free` macros
+- Adding compiler flags to suppress strict implicit function declaration errors
 
 
 ### Workflow Overview

@@ -1,0 +1,4 @@
+# Makevars for iRF package
+# Ensures compatibility with modern compilers (Apple Clang 17+)
+
+PKG_CFLAGS = -Wno-error=implicit-function-declaration
